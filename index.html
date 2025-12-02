@@ -1,20 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-M" />
+    <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>U(1) XY Model Simulation</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta property="og:title" content="Ginzburg-Landau Vortex Simulation" />
+    <meta
+      property="og:description"
+      content="Explore topological defects, phase transitions, and complex scalar fields in this interactive physics simulation."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://bobbyconnolly.com/ginzburg-landau-simulation/"
+    />
+    <title>Ginzburg-Landau Vortex Simulation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
+    <div id="simulation-container">
+      <canvas id="simulation-canvas"></canvas>
+    </div>
+
     <div id="controls">
       <button id="reset-button">Restart</button>
-      <div class="slider-container">
-        <label for="speed-slider">Speed</label>
-        <input type="range" min="1" max="10" value="5" id="speed-slider" />
+
+      <!-- Rotate button removed as it is not used in this simulation -->
+      <button id="rotate-button" style="display: none;"></button>
+
+      <div class="slider-wrapper">
+        <div class="slider-container">
+          <label for="speed-slider">Speed</label>
+          <input type="range" min="1" max="20" value="5" id="speed-slider" />
+        </div>
+        <div class="slider-container">
+          <label for="resolution-slider">Res</label>
+          <!-- Resolution slider: 1 is blocky, 5 is fine -->
+          <input type="range" min="1" max="5" value="3" step="1" id="resolution-slider" />
+        </div>
+        <div class="slider-container">
+          <label for="temp-slider">Noise</label>
+          <input type="range" min="0" max="100" value="0" id="temp-slider" />
+        </div>
+      </div>
+
+      <!-- Checkbox for Smoothing (Default OFF) -->
+      <div class="checkbox-container" title="Toggle smooth interpolation vs raw grid pixels">
+        <input type="checkbox" id="smooth-toggle" />
+        <label for="smooth-toggle">Smooth</label>
+      </div>
+
+      <button id="info-button" title="Info">i</button>
+    </div>
+
+    <div id="info-modal" class="hidden">
+      <div id="info-content">
+        <button id="info-close-button-desktop" class="info-close-button">
+          ×
+        </button>
+        <h2>What Am I Seeing?</h2>
+        <p>
+          This simulation visualizes a <strong>Complex Scalar Field</strong> 
+          evolving under the Ginzburg-Landau equation. Instead of arrows, you see 
+          a continuous field of color and light.
+        </p>
+        <ul>
+            <li><strong>Color (Hue):</strong> Represents the <em>Phase</em> (angle) of the quantum wavefunction.</li>
+            <li><strong>Brightness:</strong> Represents the <em>Magnitude</em> (density) of the field.</li>
+            <li><strong>Black Dots:</strong> These are <strong>Topological Defects</strong> (Vortices).</li>
+        </ul>
+        <hr />
+        
+        <h4>Q: What are the black dots?</h4>
+        <p>
+          These are <strong>Vortices</strong> 🌀. In this model, the field wants to have a magnitude of 1 (bright), 
+          but if the phase twists by 360° around a specific point, the math forces the magnitude to drop to <strong>zero</strong> 
+          at the center to avoid a discontinuity.
+        </p>
+        <p>
+            Think of them as the "particles" of this universe. They are stable knots that cannot just fade away; 
+            a vortex must collide with an anti-vortex to annihilate 💥.
+        </p>
+
+        <h4>Q: Why do new dots appear at the edges when I click?</h4>
+        <p>
+          This universe is a <strong>Torus</strong> 🍩. A Torus cannot hold a single topological charge (+1) without breaking. 
+          When you click to spawn one vortex, the math creates a <strong>Branch Cut</strong>—a "seam" where the phase doesn't match up 
+          at the edge of the world.
+        </p>
+        <p>
+            The physics engine instantly spawns a ghost <strong>Anti-Vortex</strong> (-1) at the seam to heal this tear 
+            and restore the total charge to zero. This violent correction is why you see the "messy" birth of particles!
+        </p>
+
+        <h4>Q: How do I annihilate them? 💥</h4>
+        <p>
+          <strong>Try double-clicking!</strong> The simulation alternates between spawning a +1 vortex and a -1 vortex on each click 
+          (like flipping a switch). If you click roughly in the same spot twice, the second vortex will cancel out the first one, 
+          and the field will heal back to a smooth state.
+        </p>
+
+        <h4>Q: Is this real Quantum Mechanics? ⚛️</h4>
+        <p>
+          Yes, but with a twist! You are simulating a <strong>Macroscopic Wavefunction</strong>. 
+          Unlike the Schrödinger equation which describes a single particle, this field describes a "Condensate" 
+          (like a Superconductor or Superfluid) where billions of particles lock into the exact same state 
+          and behave like a single, giant quantum object.
+        </p>
+        <ul>
+            <li>
+                <strong>Quantization:</strong> The black dots demonstrate fundamental quantum topology. 
+                Because the phase must wrap exactly 360° to match up, rotation is <em>quantized</em>. 
+                You can have 1 twist, or 2 twists, but never 1.5 twists.
+            </li>
+            <li>
+                <strong>Dissipation:</strong> While standard quantum mechanics preserves energy forever, 
+                this simulation includes "dissipation." The system sheds energy to relax into its lowest 
+                energy state (the ground state), which is why you see the initial chaos settle into stable patterns.
+            </li>
+        </ul>
+
+        <h4>Q: What is the Physics Equation? 📜</h4>
+        <p>
+          This uses the <strong>Time-Dependent Ginzburg-Landau (TDGL)</strong> equation:
+        </p>
+        <pre><code>∂ψ/∂t = D∇²ψ + ψ(1 - |ψ|²)</code></pre>
+        <p>
+          It describes systems undergoing a phase transition, such as:
+        </p>
+        <ul>
+            <li><strong>Superconductors:</strong> The onset of superconductivity and magnetic flux tubes.</li>
+            <li><strong>Superfluids:</strong> The formation of quantum vortices in liquid helium.</li>
+            <li><strong>Cosmology:</strong> The formation of cosmic strings in the early universe (Kibble-Zurek mechanism).</li>
+        </ul>
+
+        <h4>Q: What does the "Smooth" toggle do?</h4>
+        <p>
+          This controls how the simulation is drawn, illustrating a key difference between 
+          computational methods and physical theory:
+        </p>
+        <ul>
+            <li>
+                <strong>Off (Pixelated):</strong> Shows the raw simulation grid. This is true to the 
+                <em>Computer Science</em> reality—we are calculating values on a discrete lattice (like a chessboard).
+                It honestly reveals the limitations of the computer representation.
+            </li>
+            <li>
+                <strong>On (Smooth):</strong> Blends the pixels. This is true to the <em>Physics</em> reality—the 
+                Ginzburg-Landau theory describes a continuous fluid. The grid is just an artificial scaffold we use 
+                to calculate it, so smoothing attempts to reconstruct what the field "should" look like using bilinear interpolation.
+            </li>
+        </ul>
+
+        <hr />
+        <p
+          style="
+            text-align: center;
+            font-size: 0.9em;
+            margin-top: 20px;
+          "
+        >
+          Find the source code on
+          <a
+            href="https://github.com/bobbyconnolly/u1"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub</a
+          >.
+        </p>
+
+        <button id="info-close-button-mobile" class="info-close-button fab">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 12H5M12 19L5 12L12 5"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
       </div>
     </div>
-    <canvas id="simulation-canvas"></canvas>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
