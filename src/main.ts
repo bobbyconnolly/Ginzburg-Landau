@@ -36,6 +36,7 @@ class GinzburgLandauSimulation {
   // Rendering Options
   // Default OFF: Shows raw pixels to emphasize the discrete grid nature.
   private smoothRendering = false;
+  private viewMode: 'combined' | 'phase' | 'magnitude' = 'combined';
 
   // Safety Flags
   // Prevents flashing lights from surprising the user during drag operations.
@@ -330,14 +331,29 @@ class GinzburgLandauSimulation {
 
         // Map Phase Angle to Hue (Color)
         let hue = (angle * 180 / Math.PI + 360) % 360;
-        
-        // Map Magnitude to Lightness
-        // Core (0) -> Black
-        // Field (1) -> Bright Color
-        const lightness = Math.min(1.0, mag) * 50; 
+        let saturation = 1.0;
+        let lightness = 50; // Default brightness
+
+        if (this.viewMode === 'combined') {
+            // Standard: Color = Phase, Brightness = Magnitude
+            // Core is black, Field is colorful
+            lightness = Math.min(1.0, mag) * 50;
+        } 
+        else if (this.viewMode === 'phase') {
+            // Phase Only: Constant brightness. 
+            // This reveals the "Branch Cuts" (seams) vividly as sharp color contrasts.
+            lightness = 50; 
+        } 
+        else if (this.viewMode === 'magnitude') {
+            // Magnitude Only: Black & White.
+            // This hides the topology and just shows the "Particles" (density dips).
+            saturation = 0; // Grayscale
+            // Map 0..1 magnitude to 0..100 lightness for high contrast density map
+            lightness = Math.min(1.0, mag) * 100; 
+        }
 
         // Convert to RGB for the pixel buffer
-        const [r, g, b] = this.hslToRgb(hue / 360, 1.0, lightness / 100);
+        const [r, g, b] = this.hslToRgb(hue / 360, saturation, lightness / 100);
 
         const pxIndex = i * 4;
         data[pxIndex] = r;
@@ -420,13 +436,14 @@ class GinzburgLandauSimulation {
     const tempSlider = document.getElementById("temp-slider") as HTMLInputElement;
     const resolutionSlider = document.getElementById("resolution-slider") as HTMLInputElement;
     const smoothToggle = document.getElementById("smooth-toggle") as HTMLInputElement;
+    const viewSelect = document.getElementById("view-select") as HTMLSelectElement;
 
     resetButton.addEventListener("click", () => this.initializeGrid());
     
     // Stop event propagation so clicking UI doesn't click the canvas
     const interactables = [
         resetButton, speedSlider, tempSlider, resolutionSlider, 
-        smoothToggle, smoothToggle.parentElement!, 
+        smoothToggle, smoothToggle.parentElement!, viewSelect,
         this.infoButton, this.rotateButton
     ];
     interactables.forEach(el => {
@@ -454,6 +471,12 @@ class GinzburgLandauSimulation {
         this.smoothRendering = (e.target as HTMLInputElement).checked;
         this.draw(); 
     });
+
+    viewSelect.addEventListener("change", (e) => {
+        this.viewMode = (e.target as HTMLSelectElement).value as any;
+        this.draw(); // Force redraw immediately so they see the change even if paused
+    });
+
 
     window.addEventListener("resize", () => this.setupCanvas());
 

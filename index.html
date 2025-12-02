@@ -15,7 +15,7 @@
     <meta property="og:type" content="website" />
     <meta
       property="og:url"
-      content="https://bobbyconnolly.com/ginzburg-landau-simulation/"
+      content="https://bobbyconnolly.com/gl-simulation/"
     />
     <title>Ginzburg-Landau Vortex Simulation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -41,6 +41,16 @@
           <label for="speed-slider">Speed</label>
           <input type="range" min="1" max="20" value="5" id="speed-slider" />
         </div>
+        
+        <div class="slider-container">
+          <label for="view-select">View</label>
+          <select id="view-select" style="pointer-events: auto; background: #01579b; color: white; border: none; border-radius: 4px; padding: 2px; font-family: inherit; font-weight: bold;">
+            <option value="combined">Combined</option>
+            <option value="phase">Phase</option>
+            <option value="magnitude">Density</option>
+          </select>
+        </div>
+
         <div class="slider-container">
           <label for="resolution-slider">Res</label>
           <!-- Resolution slider: 1 is blocky, 5 is fine -->
@@ -78,7 +88,7 @@
             <li><strong>Black Dots:</strong> These are <strong>Topological Defects</strong> (Vortices).</li>
         </ul>
         <hr />
-        
+
         <h4>Q: What are the black dots?</h4>
         <p>
           These are <strong>Vortices</strong> 🌀. In this model, the field wants to have a magnitude of 1 (bright), 
@@ -92,7 +102,7 @@
 
         <h4>Q: Why do new dots appear at the edges when I click?</h4>
         <p>
-          This universe is a <strong>Torus</strong> 🍩. A Torus cannot hold a single topological charge (+1) without breaking. 
+          <strong>The universe is a Torus</strong> 🍩 (it wraps around). A Torus cannot hold a single topological charge (+1) without breaking. 
           When you click to spawn one vortex, the math creates a <strong>Branch Cut</strong>—a "seam" where the phase doesn't match up 
           at the edge of the world.
         </p>
@@ -107,6 +117,13 @@
           (like flipping a switch). If you click roughly in the same spot twice, the second vortex will cancel out the first one, 
           and the field will heal back to a smooth state.
         </p>
+
+        <h4>Q: What are the View Modes?</h4>
+        <ul>
+            <li><strong>Combined:</strong> Shows physics reality (Phase + Magnitude).</li>
+            <li><strong>Phase:</strong> Shows mathematical topology. You can clearly see the "Branch Cuts" (seams) here!</li>
+            <li><strong>Density:</strong> Shows "Mass". It looks like black particles in a white fluid.</li>
+        </ul>
 
         <h4>Q: Is this real Quantum Mechanics? ⚛️</h4>
         <p>
@@ -141,7 +158,7 @@
             <li><strong>Superfluids:</strong> The formation of quantum vortices in liquid helium.</li>
             <li><strong>Cosmology:</strong> The formation of cosmic strings in the early universe (Kibble-Zurek mechanism).</li>
         </ul>
-
+        
         <h4>Q: What does the "Smooth" toggle do?</h4>
         <p>
           This controls how the simulation is drawn, illustrating a key difference between 
@@ -161,7 +178,7 @@
         </ul>
 
         <hr />
-
+        
         <p style="text-align: center; font-size: 0.9em; margin-top: 20px;">
             <strong>Related Project:</strong><br/>
             <a href="https://bobbyconnolly.com/u1-simulation/" target="_blank" rel="noopener noreferrer">
@@ -172,7 +189,7 @@
           style="
             text-align: center;
             font-size: 0.9em;
-            margin-top: 20px;
+            margin-top: 10px;
           "
         >
           Find the source code on
