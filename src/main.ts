@@ -61,7 +61,7 @@ class GinzburgLandauSimulation {
   // --- Animation State ---
   private frameCount = 0;
   private isPaused = false;
-  private lastFrameTime = 0;
+  // private lastFrameTime = 0;
 
   // --- Interactive Parameters ---
   private simulationSpeed = 1; // Physics steps per render frame
@@ -113,7 +113,7 @@ class GinzburgLandauSimulation {
     this.loadPanelPosition();
     this.setupEventListeners();
 
-    this.lastFrameTime = performance.now();
+    // this.lastFrameTime = performance.now();
     this.animate();
   }
 
@@ -387,9 +387,9 @@ class GinzburgLandauSimulation {
   }
 
   // --- Animation Loop ---
-  private animate(currentTime: number = 0): void {
-    const deltaTime = currentTime - this.lastFrameTime;
-    this.lastFrameTime = currentTime;
+  private animate(_currentTime: number = 0): void {
+    // const deltaTime = currentTime - this.lastFrameTime;
+    // this.lastFrameTime = currentTime;
 
     if (!this.isPaused) {
       // We can run multiple physics steps per visual frame to speed up the simulation
@@ -558,7 +558,7 @@ class GinzburgLandauSimulation {
     const closeModal = () => {
         this.infoModal.classList.add("hidden");
         this.isPaused = false;
-        this.lastFrameTime = performance.now();
+        // this.lastFrameTime = performance.now();
     };
     this.infoCloseButtonDesktop.addEventListener("click", closeModal);
     this.infoCloseButtonMobile.addEventListener("click", closeModal);

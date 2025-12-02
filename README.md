@@ -69,5 +69,5 @@ This project uses [Vite](https://vitejs.dev/) with TypeScript.
 
 ---
 
-Find the source code on [GitHub](https://github.com/bobbyconnolly/u1).
+Find the source code on [GitHub](https://github.com/bobbyconnolly/Ginzburg-Landau).
 """
